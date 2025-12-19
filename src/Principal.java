@@ -1,4 +1,5 @@
 import com.google.gson.Gson;
+import modelo.ExchangeService;
 import modelo.Moedas;
 
 import java.io.IOException;
@@ -21,25 +22,12 @@ public class Principal {
         String tipo = sc.nextLine();
 
 
-        URI endereco = URI.create("https://v6.exchangerate-api.com/v6/5380d28b267ab7458bb7bd84/latest/BRL");
-
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(endereco)
-                .build();
-
         try {
 
-            HttpClient client = HttpClient.newBuilder().build();
-
-            HttpResponse<String> response = client
-                    .send(request, HttpResponse.BodyHandlers.ofString());
-            Gson gson = new Gson();
-            Moedas moedas = gson.fromJson(response.body(), Moedas.class);
-
-            double moedaConvertida = moedas.conversion_rates().get(tipo);
+            ExchangeService exchangeService = new ExchangeService();
+            double moedaConvertida = exchangeService.recuperarMoeda(tipo);
 
             double conversao = valor * moedaConvertida;
-
             System.out.println(conversao);
 
         } catch (RuntimeException | IOException e) {
