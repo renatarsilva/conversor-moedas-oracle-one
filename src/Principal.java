@@ -23,7 +23,6 @@ public class Principal {
 
 
         try {
-
             ExchangeService exchangeService = new ExchangeService();
             double moedaConvertida = exchangeService.recuperarMoeda(tipo);
 
