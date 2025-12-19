@@ -15,6 +15,10 @@ public class Principal {
 
         System.out.println("Digite o valor que gostaria de converter:");
         Double valor = sc.nextDouble();
+        sc.nextLine();
+
+        System.out.println("Digite o tipo da moeda");
+        String tipo = sc.nextLine();
 
 
         URI endereco = URI.create("https://v6.exchangerate-api.com/v6/5380d28b267ab7458bb7bd84/latest/BRL");
@@ -25,15 +29,20 @@ public class Principal {
 
         try {
 
-            HttpResponse<String> response = HttpClient
-                    .newHttpClient()
+            HttpClient client = HttpClient.newBuilder().build();
+
+            HttpResponse<String> response = client
                     .send(request, HttpResponse.BodyHandlers.ofString());
-        System.out.println(response.statusCode());
-        System.out.println(response.body());
-        Gson gson =  new Gson();
-        Moedas moedas = gson.fromJson(response.body(), Moedas.class);
-            System.out.println(moedas);
-        } catch(RuntimeException | IOException e){
+            Gson gson = new Gson();
+            Moedas moedas = gson.fromJson(response.body(), Moedas.class);
+
+            double moedaConvertida = moedas.conversion_rates().get(tipo);
+
+            double conversao = valor * moedaConvertida;
+
+            System.out.println(conversao);
+
+        } catch (RuntimeException | IOException e) {
             System.out.println("Deu erro");
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
